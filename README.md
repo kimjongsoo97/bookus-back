@@ -47,9 +47,11 @@ http://127.0.0.1:8000/
 ex) docker-compose exec web python manage.py makemigrations
     docker-compose exec web python manage.py migrate
     docker-compose exec web python manage.py runserver
-    docker-compose exec web python manage.py createsuperuser
-
-
+    docker-compose exec web python manage.py createsuperus
+```bash
+docker logs bookus_backend-web-1
+```
+runserver가 아니기때문에 오류로인한 도커 확인은 cmd 명령어로 확인
 
 - 데이터베이스는 **SQLite(db.sqlite3)** 를 사용하며, 로컬에 저장됩니다.
 - 코드 수정은 **실시간으로 반영**됩니다 (`volumes` 설정 덕분에).
