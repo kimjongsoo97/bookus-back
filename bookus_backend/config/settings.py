@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'message',
     'memo',
     "rest_framework",
+    'rest_framework_simplejwt',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -130,4 +136,34 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# AUTH_USER_MODEL="accounts.User"
+AUTH_USER_MODEL="accounts.User"
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    # 액세스 토큰 유효 기간 (5분)d
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60000000),
+
+    # 리프레시 토큰 유효 기간 (1일)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+
+    # 리프레시 토큰 갱신 시 새 토큰을 발급하지 않음
+    'ROTATE_REFRESH_TOKENS': False,
+
+    # 리프레시 토큰 갱신 후 기존 토큰을 블랙리스트 처리 (단, 블랙리스트 기능 사용 시 필요)
+    'BLACKLIST_AFTER_ROTATION': True,
+
+    # 서명 알고리즘 및 서명 키
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,  # settings.py의 SECRET_KEY 사용
+
+    # 인증 헤더 타입 설정: Authorization: Bearer <토큰>
+    'AUTH_HEADER_TYPES': ('Bearer',),
+
+    # 유저 식별자 관련 설정
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+
+    # 사용할 토큰 클래스 지정 (AccessToken 사용)
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+}
