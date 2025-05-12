@@ -26,6 +26,10 @@ class UserUpdateNicknameSerializer(serializers.ModelSerializer):
         model=User
         fields=['nickname']    
 
+class UserUpdatePasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields=['password']
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -39,3 +43,4 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self,attrs):
         attrs['username']=attrs.get('email')
         return super().validate(attrs)
+    
