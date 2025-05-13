@@ -10,8 +10,8 @@ class Message(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)  # 이 쪽지를 갖고 있는 사용자 (보낸 사람 or 받은 사람)
     counterpart = models.ForeignKey(User, on_delete=models.CASCADE, related_name='message_partner')
     is_sender = models.BooleanField()  # 보낸 쪽지인지 여부
-    title = models.CharField(max_length=20)
-    content = models.TextField()
+    title = models.CharField(max_length=20,null=False)
+    content = models.TextField(null=False)
     read_status = models.CharField(max_length=10, choices=STATUS_READ_CHOICES, default="UNREAD")
     delete_status = models.CharField(max_length=20, choices=STATUS_DELETE_CHOICES, default="UNDELETE")
     created_at = models.DateTimeField(auto_now_add=True)

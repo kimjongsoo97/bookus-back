@@ -21,6 +21,7 @@ app_name="community"
 urlpatterns = [
     path('',views.index,name='index'),
     path('create/',views.create,name='create'),
-    path('detail/<int:community_id>',views.detail_community,name='detail_community'),
-    path('delete/<int:community_id>',views.delete_community,name='delete_community')
+    path('detail/<int:community_id>/',views.detail_community,name='detail_community'),
+    path('delete/<int:community_id>/',views.delete_community,name='delete_community'),
+    path('update/<int:community_id>/',views.update_community,name='update_community')
 ]
