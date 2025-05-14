@@ -19,4 +19,11 @@ from django.urls import path
 
 app_name="memo"
 urlpatterns = [
+    path('',views.memo_index,name='memo_index'),
+    path('create/',views.create_memo,name='memo_create'),
+    path('update/<int:memo_id>/',views.update_memo,name='memo_update'),
+    path('detail/<int:memo_id>/',views.detail_memo,name='memo_detail'),
+    path('delete/<int:memo_id>/',views.delete_memo,name='memo_delete'),
+    path('memo/audio/', views.create_memo_from_audio, name='create_memo_from_audio'),
 ]
+
