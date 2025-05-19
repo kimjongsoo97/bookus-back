@@ -57,6 +57,7 @@ def detail_meeting(request, meeting_id):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@transaction.atomic
 def join(request, meeting_id):
     # 회의 조회
     meeting = get_object_or_404(Meeting, id=meeting_id, delete_status='UNDELETE')
@@ -80,7 +81,7 @@ def join(request, meeting_id):
     
     # 시리얼라이저로 응답
     serializer = MembershipSerializer(membership, context={'request': request})
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response({'success':serializer.data}, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
