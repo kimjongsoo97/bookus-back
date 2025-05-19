@@ -19,5 +19,9 @@ from django.urls import path
 
 app_name="meeting"
 urlpatterns = [
-
+    path('', views.index, name='index'),
+    path('create/',views.create, name='create'),
+    path('detail/<int:meeting_id>/',views.detail_meeting,name='detail'),
+    path('join/<int:meeting_id>/',views.join, name='join'),
+    path('withdraw/<int:meeting_id>/',views.withdraw, name='withdraw'),
 ]

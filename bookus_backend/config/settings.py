@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'accounts',
     'comment',
     'community',
+    'contents',
     'books',
     'meeting',
     'message',
