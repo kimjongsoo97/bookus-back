@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'meeting',
     'message',
     'memo',
+    'corsheaders',
     "rest_framework",
     'rest_framework_simplejwt',
     'django.contrib.admin',
@@ -58,6 +59,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -84,7 +86,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
+CROS_ALLOWED_ORIGINS=[
+    'http://127.0.0.1.5173',
+    'http://localhost:5173',
+]
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
