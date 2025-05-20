@@ -50,9 +50,13 @@ class MeetingSerializer(serializers.ModelSerializer):
         if data.get('delete_status') and data['delete_status'] not in dict(Meeting.STATUS_DELETE_CHOICES):
             raise serializers.ValidationError({"delete_status": _("유효하지 않은 삭제 상태입니다.")})
         return data
-
     def validate_map_directions(self, value):
-        """map_directions의 JSON 구조 검증."""
         if value and not isinstance(value, dict):
-            raise serializers.ValidationError(_("map_directions은 JSON 객체여야 합니다."))
+            raise serializers.ValidationError("map_directions은 JSON 객체여야 합니다.")
+        
+        required_keys = ['title', 'address', 'x', 'y']
+        for key in required_keys:
+            if key not in value:
+                raise serializers.ValidationError(f"'{key}' 필드가 필요합니다.")
+        
         return value

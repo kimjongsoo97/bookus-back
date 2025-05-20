@@ -1,4 +1,5 @@
 # meetings/views.py
+import requests
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
 from rest_framework import status
@@ -109,3 +110,24 @@ def withdraw(request,meeting_id):
     # 일반 사용자인 경우 Membership만 삭제
     membership.delete()
     return Response({"detail": "모임에서 성공적으로 탈퇴되었습니다."}, status=status.HTTP_200_OK)
+
+
+# 네이버 검색어 API 프록시
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+def search_place(request):
+    query = request.GET.get('query')
+    if not query:
+        return Response({'error': 'query 파라미터가 필요합니다.'}, status=400)
+
+    headers = {
+        'X-Naver-Client-Id': '',  ## 네이버 클라이언트 id 키
+        'X-Naver-Client-Secret': '',  ## 네이버 클라이언트 시크릿 키
+    }
+    params = {'query': query, 'display': 1}
+
+    try:
+        res = requests.get('https://openapi.naver.com/v1/search/local.json', headers=headers, params=params)
+        return Response(res.json(), status=res.status_code)
+    except requests.exceptions.RequestException as e:
+        return Response({'error': str(e)}, status=500)
