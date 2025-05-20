@@ -15,4 +15,7 @@ urlpatterns = [
     # 독후감
     path('<int:content_id>/book-reviews/', views.book_review_create, name='book-review-create'),
     path('<int:content_id>/book-reviews/compilation/', views.book_review_compilation, name='book-review-compilation'),
+    path('<int:content_id>/quiz/replies/delete/',views.quiz_reply_delete,name='quiz-reply-delete'),
+    path('<int:content_id>/book-review/delete/',views.book_review_delete,name='book-review-delete'),
+    path('<int:content_id>/discussion/replies/delete/',views.discussion_reply_delete,name='discussion-reply-delete')
 ]

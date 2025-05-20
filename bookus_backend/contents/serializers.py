@@ -6,21 +6,31 @@ from meeting.models import Membership, Meeting
 
 class DiscussionReplySerializer(serializers.ModelSerializer):
     user_nickname = serializers.CharField(source='user.nickname', read_only=True)
+    content=serializers.PrimaryKeyRelatedField(queryset=Content.objects.all())
+    user=serializers.ReadOnlyField(source='user.id')
 
     class Meta:
         model = DiscussionReply
-        fields = ['id', 'user', 'user_nickname', 'body', 'created_at']
+        fields = ['id', 'user', 'user_nickname', 'body', 'created_at','content']
         read_only_fields = ['id', 'user', 'user_nickname', 'created_at']
 
+    def create(self,validated_data):
+        validated_data['user']=self.context['request'].user
+        return super().create(validated_data)
+    
 class QuizReplySerializer(serializers.ModelSerializer):
     user_nickname = serializers.CharField(source='user.nickname', read_only=True)
+    content=serializers.PrimaryKeyRelatedField(queryset=Content.objects.all())
     is_correct = serializers.BooleanField(read_only=True)
+    user=serializers.ReadOnlyField(source='user.id')
 
     class Meta:
         model = QuizReply
-        fields = ['id', 'user', 'user_nickname', 'body', 'is_correct', 'created_at']
+        fields = ['id', 'content','user', 'user_nickname', 'body', 'is_correct', 'created_at']
         read_only_fields = ['id', 'user', 'user_nickname', 'is_correct', 'created_at']
-
+    def create(self,validated_data):
+        validated_data['user']=self.context['request'].user
+        return super().create(validated_data)
 class BookReviewSerializer(serializers.ModelSerializer):
     user_nickname = serializers.CharField(source='user.nickname', read_only=True)
     content = serializers.PrimaryKeyRelatedField(queryset=Content.objects.all())  # 추가: content 필드를 명시적으로 처리

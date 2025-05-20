@@ -32,8 +32,6 @@ def content_detail(request, meeting_id, content_id):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def content_create(request, meeting_id):
-    print("@@@@@@@@@@@")
-
     meeting = get_object_or_404(Meeting, id=meeting_id, delete_status='UNDELETE')
     if not Membership.objects.filter(user=request.user, meeting=meeting, member_status='MEETING_ADMIN').exists():
         return Response({"detail": "모임장만 컨텐츠를 생성할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
@@ -71,8 +69,8 @@ def discussion_reply_create(request, meeting_id, content_id):
         return Response({"detail": "지난 모임에서는 답글을 작성할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
     data = request.data.copy()
     data['content'] = content_id
-    data['user'] = request.user.id
-    serializer = DiscussionReplySerializer(data=data)
+    # data['user'] = request.user.id
+    serializer = DiscussionReplySerializer(data=data,context={"request":request})
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -89,8 +87,8 @@ def quiz_reply_create(request, meeting_id, content_id):
         return Response({"detail": "지난 모임에서는 답글을 작성할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
     data = request.data.copy()
     data['content'] = content_id
-    data['user'] = request.user.id
-    serializer = QuizReplySerializer(data=data)
+    # data['user'] = request.user.id
+    serializer = QuizReplySerializer(data=data, context={'request': request})
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -105,7 +103,7 @@ def book_review_create(request, meeting_id, content_id):
     content = get_object_or_404(Content, id=content_id, meeting=meeting, content_type='BOOK_REVIEW')
     print("Content object:", content)  # 디버깅: Content 객체 확인
     if not Membership.objects.filter(user=request.user, meeting=meeting).exists():
-        return Response
+        return Response()
     if meeting.meeting_date < timezone.now():
         return Response({"detail": "지난 모임에서는 독후감을 작성할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
     if BookReview.objects.filter(content=content, user=request.user).exists():
@@ -123,6 +121,8 @@ def book_review_create(request, meeting_id, content_id):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     print("Serializer errors:", serializer.errors)  # 디버깅: 시리얼라이저 에러 확인
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @transaction.atomic
@@ -147,3 +147,56 @@ def book_review_compilation(request, meeting_id, content_id):
         )
     serializer = BookReviewCompilationSerializer(compilation)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def quiz_reply_delete(request, meeting_id, content_id):
+    meeting = get_object_or_404(Meeting, id=meeting_id, delete_status='UNDELETE')
+    content = get_object_or_404(Content, id=content_id, meeting=meeting, content_type='QUIZ')
+
+    if not Membership.objects.filter(user=request.user, meeting=meeting).exists():
+        return Response({"detail": "모임 회원만 답글을 삭제할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
+
+    if meeting.meeting_date < timezone.now():
+        return Response({"detail": "지난 모임의 답글은 삭제할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # 사용자 자신의 퀴즈 답글만 삭제할 수 있음
+    reply = get_object_or_404(QuizReply, content=content, user=request.user)
+
+    reply.delete()
+    return Response({"detail": "답글이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def book_review_delete(request, meeting_id, content_id):
+    meeting = get_object_or_404(Meeting, id=meeting_id, delete_status='UNDELETE')
+    content = get_object_or_404(Content, id=content_id, meeting=meeting, content_type='BOOK')
+
+    if not Membership.objects.filter(user=request.user, meeting=meeting).exists():
+        return Response({"detail": "모임 회원만 리뷰를 삭제할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
+
+    if meeting.meeting_date < timezone.now():
+        return Response({"detail": "지난 모임의 리뷰는 삭제할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+    review = get_object_or_404(BookReview, content=content, user=request.user)
+
+    review.delete()
+    return Response({"detail": "리뷰가 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def discussion_reply_delete(request, meeting_id, content_id):
+    meeting = get_object_or_404(Meeting, id=meeting_id, delete_status='UNDELETE')
+    content = get_object_or_404(Content, id=content_id, meeting=meeting, content_type='DISCUSSION')
+
+    if not Membership.objects.filter(user=request.user, meeting=meeting).exists():
+        return Response({"detail": "모임 회원만 답글을 삭제할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
+
+    if meeting.meeting_date < timezone.now():
+        return Response({"detail": "지난 모임의 답글은 삭제할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+    reply = get_object_or_404(DiscussionReply, content=content, user=request.user)
+
+    reply.delete()
+    return Response({"detail": "답글이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
