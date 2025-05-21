@@ -30,7 +30,7 @@ def login(request):
     user=authenticate(request,username=email,password=password)
     token = RefreshToken.for_user(user).access_token
     return Response({
-        'token': str(token),
+        'token': str(token),    
         'user': {
             'id': user.id,
             'email': user.email,
