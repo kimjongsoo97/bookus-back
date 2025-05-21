@@ -28,9 +28,11 @@ class QuizReplySerializer(serializers.ModelSerializer):
         model = QuizReply
         fields = ['id', 'content','user', 'user_nickname', 'body', 'is_correct', 'created_at']
         read_only_fields = ['id', 'user', 'user_nickname', 'is_correct', 'created_at']
+        
     def create(self,validated_data):
         validated_data['user']=self.context['request'].user
         return super().create(validated_data)
+    
 class BookReviewSerializer(serializers.ModelSerializer):
     user_nickname = serializers.CharField(source='user.nickname', read_only=True)
     content = serializers.PrimaryKeyRelatedField(queryset=Content.objects.all())  # 추가: content 필드를 명시적으로 처리
