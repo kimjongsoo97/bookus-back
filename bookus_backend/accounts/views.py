@@ -72,3 +72,53 @@ def update_nickname(request):
         serializer.save()
         return Response({'닉네임 변경 성공':serializer.data},status=status.HTTP_200_OK)
     return Response({'요청 에러':'요청 형식이 유효하지 않습니다'},status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def kakao_login_view(request):
+    kakao_token = request.data.get("access_token")
+    if not kakao_token:
+        return Response({"error": "카카오 access token이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # 사용자 정보 요청
+    kakao_user_info_url = "https://kapi.kakao.com/v2/user/me"
+    headers = {"Authorization": f"Bearer {kakao_token}"}  # ✅ 오타 수정
+
+    kakao_response = requests.get(kakao_user_info_url, headers=headers)  # ✅ requests.get
+
+    if kakao_response.status_code != 200:
+        return Response({"error": "카카오 인증 실패"}, status=400)
+
+    kakao_data = kakao_response.json()
+    kakao_id = kakao_data.get("id")
+    kakao_account = kakao_data.get("kakao_account", {})
+
+    email = kakao_account.get("email", f"{kakao_id}@kakao.com")
+    profile = kakao_account.get("profile", {})
+    nickname = profile.get("nickname", f"user_{kakao_id}")
+    name = profile.get("nickname", "카카오사용자")
+    phone_number = "010-0000-0000"
+
+    # 닉네임 중복 처리
+    if User.objects.filter(nickname=nickname).exists():
+        nickname += str(User.objects.count())
+
+    # 유저 생성 or 조회
+    if User.objects.filter(email=email).exists():
+        user = User.objects.get(email=email)
+    else:
+        user = User.objects.create(
+            kakao_id=kakao_id,
+            email=email,
+            nickname=nickname,
+            name=name,
+            phone_number=phone_number,
+        )
+        user.set_unusable_password()
+        user.save()
+
+    # JWT 토큰 발급
+    refresh = RefreshToken.for_user(user)
+    return Response({
+        "access": str(refresh.access_token),
+        "refresh": str(refresh),
+    })

@@ -23,6 +23,6 @@ urlpatterns = [
     path('',views.index,name='index'),
     path('send/',views.send,name='send'),
     path('sendmessage/',views.send_message,name='sendmesssage'),
-    path('detailmessage/<int:message_id>',views.detail_message,name='detail_message'),
-    path('deletemessage/<int:message_id>',views.delete_message,name='delete_message')
+    path('detailmessage/<int:message_id>/',views.detail_message,name='detail_message'),
+    path('deletemessage/<int:message_id>/',views.delete_message,name='delete_message')
 ]

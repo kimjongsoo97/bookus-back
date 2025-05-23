@@ -16,7 +16,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     nickname=models.CharField(max_length=10,null=False,unique=True)
     name=models.CharField(max_length=50,null=False)
     phone_number=models.CharField(max_length=13,null=False)
-
+    kakao_id=models.CharField(max_length=255,unique=True,null=True)
     USERNAME_FIELD='email'
     REQUIRED_FIELDS=[]
 
