@@ -24,7 +24,7 @@ class CommunitySerializer(serializers.ModelSerializer):
 class CommunityCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Community
-        fields = ['title', 'content', 'img', 'created_at']
+        fields = ['id','title', 'content', 'img', 'created_at']
         # 'user'는 context에서 자동 설정하므로 포함하지 않음
 
     def create(self, validated_data):

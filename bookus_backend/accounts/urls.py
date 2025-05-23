@@ -24,5 +24,7 @@ urlpatterns = [
     path('login/',views.login, name='login'),
     path('checkemail/',views.check_email, name='checkemail'),
     path('checknickname/',views.check_nickname,name='checknickname'),
-    path('updatenickname/',views.update_nickname,name='update_nickname')
+    path('updatenickname/',views.update_nickname,name='update_nickname'),
+    path('kakao/login/',views.kakao_login_view, name='kakao-login'),
+
 ]
