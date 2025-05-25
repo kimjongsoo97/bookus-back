@@ -36,7 +36,6 @@ def detail_community(request,community_id):
 @permission_classes([IsAuthenticated])
 def delete_community(request,community_id):
     user= request.user
-
     try:
         community = Community.objects.get(id=community_id)
     except Community.DoesNotExist:
@@ -75,3 +74,4 @@ def update_community(request, community_id):
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
