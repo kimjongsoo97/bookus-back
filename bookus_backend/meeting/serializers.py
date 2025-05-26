@@ -21,7 +21,7 @@ class MeetingSerializer(serializers.ModelSerializer):
     current_member_count = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
     members = MembershipSerializer(source='membership_set', many=True, read_only=True)
-
+    
     class Meta:
         model = Meeting
         fields = [

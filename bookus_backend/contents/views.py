@@ -81,6 +81,7 @@ def discussion_reply_create(request, meeting_id, content_id):
 def quiz_reply_create(request, meeting_id, content_id):
     meeting = get_object_or_404(Meeting, id=meeting_id, delete_status='UNDELETE')
     content = get_object_or_404(Content, id=content_id, meeting=meeting, content_type='QUIZ')
+    print(request.data)
     if not Membership.objects.filter(user=request.user, meeting=meeting).exists():
         return Response({"detail": "모임 회원만 답글을 작성할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
     if meeting.meeting_date < timezone.now():
