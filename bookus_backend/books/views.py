@@ -28,6 +28,14 @@ def book_list(request):
     serializer = BookSerializer(books, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def book_random_list(request):
+ 
+    books = Book.objects.all().order_by('?')[:10]
+
+    serializer = BookSerializer(books, many=True)
+    return Response(serializer.data)
+
 
 @api_view(['GET'])
 def book_detail(request, pk):
