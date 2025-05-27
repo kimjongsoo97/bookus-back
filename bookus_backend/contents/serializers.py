@@ -65,7 +65,7 @@ class ContentSerializer(serializers.ModelSerializer):
         model = Content
         fields = [
             'id', 'meeting', 'creator','creator_nickname', 'content_type', 'title', 'body',
-            'created_at', 'reveal_date', 'word_limit', 'order',
+            'created_at', 'reveal_date', 'word_limit', 
             'discussion_replies', 'quiz_replies', 'book_reviews', 'compilation', 'is_revealed'
         ]
         read_only_fields = [
@@ -90,8 +90,6 @@ class ContentSerializer(serializers.ModelSerializer):
         if content_type == 'BOOK_REVIEW':
             if not data.get('word_limit'):
                 raise serializers.ValidationError({"word_limit": _("독후감은 글자 수 제한이 필요합니다.")})
-            if not data.get('order'):
-                raise serializers.ValidationError({"order": _("독후감은 작성 순서가 필요합니다.")})
             if not data.get('reveal_date'):
                 raise serializers.ValidationError({"reveal_date": _("독후감은 공개 날짜가 필요합니다.")})
 

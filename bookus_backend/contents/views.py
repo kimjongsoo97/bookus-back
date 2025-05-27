@@ -151,9 +151,9 @@ def book_review_compilation(request, meeting_id, content_id):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def quiz_reply_delete(request, meeting_id, content_id):
-    meeting = get_object_or_404(Meeting, id=meeting_id, delete_status='UNDELETE')
-    content = get_object_or_404(Content, id=content_id, meeting=meeting, content_type='QUIZ')
+def quiz_reply_delete(request, meeting_id, content_id, reply_id):
+    content = get_object_or_404(Content, id=content_id, meeting_id=meeting_id, content_type='QUIZ')
+    meeting = content.meeting
 
     if not Membership.objects.filter(user=request.user, meeting=meeting).exists():
         return Response({"detail": "모임 회원만 답글을 삭제할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
@@ -162,7 +162,7 @@ def quiz_reply_delete(request, meeting_id, content_id):
         return Response({"detail": "지난 모임의 답글은 삭제할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     # 사용자 자신의 퀴즈 답글만 삭제할 수 있음
-    reply = get_object_or_404(QuizReply, content=content, user=request.user)
+    reply = get_object_or_404(QuizReply, id=reply_id, content=content)
 
     reply.delete()
     return Response({"detail": "답글이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
@@ -170,9 +170,9 @@ def quiz_reply_delete(request, meeting_id, content_id):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def book_review_delete(request, meeting_id, content_id):
-    meeting = get_object_or_404(Meeting, id=meeting_id, delete_status='UNDELETE')
-    content = get_object_or_404(Content, id=content_id, meeting=meeting, content_type='BOOK')
+def book_review_delete(request, meeting_id, content_id, reply_id):
+    content = get_object_or_404(Content, id=content_id, meeting_id=meeting_id, content_type='BOOK_REVIEW')
+    meeting = content.meeting
 
     if not Membership.objects.filter(user=request.user, meeting=meeting).exists():
         return Response({"detail": "모임 회원만 리뷰를 삭제할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
@@ -180,16 +180,16 @@ def book_review_delete(request, meeting_id, content_id):
     if meeting.meeting_date < timezone.now():
         return Response({"detail": "지난 모임의 리뷰는 삭제할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
-    review = get_object_or_404(BookReview, content=content, user=request.user)
-
+    review = get_object_or_404(BookReview, id=reply_id, content=content)
     review.delete()
+
     return Response({"detail": "리뷰가 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def discussion_reply_delete(request, meeting_id, content_id):
-    meeting = get_object_or_404(Meeting, id=meeting_id, delete_status='UNDELETE')
-    content = get_object_or_404(Content, id=content_id, meeting=meeting, content_type='DISCUSSION')
+def discussion_reply_delete(request, meeting_id, content_id, reply_id):
+    content = get_object_or_404(Content, id=content_id, meeting_id=meeting_id, content_type='DISCUSSION')
+    meeting = content.meeting
 
     if not Membership.objects.filter(user=request.user, meeting=meeting).exists():
         return Response({"detail": "모임 회원만 답글을 삭제할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
@@ -197,7 +197,7 @@ def discussion_reply_delete(request, meeting_id, content_id):
     if meeting.meeting_date < timezone.now():
         return Response({"detail": "지난 모임의 답글은 삭제할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
-    reply = get_object_or_404(DiscussionReply, content=content, user=request.user)
+    reply = get_object_or_404(DiscussionReply, id=reply_id, content=content)
 
     reply.delete()
     return Response({"detail": "답글이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
