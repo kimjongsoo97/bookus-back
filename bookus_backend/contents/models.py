@@ -19,8 +19,7 @@ class Content(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     reveal_date = models.DateTimeField(null=True, blank=True)  # 퀴즈 정답 공개, 독후감 합본 공개용
     word_limit = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(50)])  # 독후감 글자 수 제한
-    order = models.JSONField(null=True, blank=True)  # 독후감 작성 순서 {user_id: order}
-
+   
     def __str__(self):
         return f"{self.content_type}: {self.title} in {self.meeting.name}"
 
