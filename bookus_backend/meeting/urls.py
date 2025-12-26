@@ -15,9 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from . import views
-from django.urls import path
+from django.urls import path, include
 
 app_name="meeting"
 urlpatterns = [
-
+    path('', views.index, name='index'),
+    path('create/',views.create, name='create'),
+    path('detail/<int:meeting_id>/',views.detail_meeting,name='detail'),
+    path('join/<int:meeting_id>/',views.join, name='join'),
+    path('withdraw/<int:meeting_id>/',views.withdraw, name='withdraw'),
+    path('detail/<int:meeting_id>/contents/', include('contents.urls')),
+    path('naver/search/', views.search_place, name='naver-search'),
 ]

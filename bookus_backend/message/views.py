@@ -79,4 +79,3 @@ def delete_message(request,message_id):
     
     serializer=MessageSerializer(message)
     return Response(serializer.data,status=status.HTTP_200_OK)
-    

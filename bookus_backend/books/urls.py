@@ -21,4 +21,7 @@ app_name="books"
 urlpatterns = [
     path('', views.book_list, name='book-list'),
     path('<int:pk>/', views.book_detail, name='book-detail'),
+    path('search/',views.book_search,name='book-search'),
+    path('favorite/',views.favorite,name='favorite'),
+    path('random/',views.book_random_list,name='book-random-list')
 ]

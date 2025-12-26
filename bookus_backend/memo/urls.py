@@ -25,5 +25,7 @@ urlpatterns = [
     path('detail/<int:memo_id>/',views.detail_memo,name='memo_detail'),
     path('delete/<int:memo_id>/',views.delete_memo,name='memo_delete'),
     path('memo/audio/', views.create_memo_from_audio, name='create_memo_from_audio'),
+    path('memo/<int:memo_id>/audio/', views.update_memo_from_audio, name='update_memo_from_audio')
+
 ]
 
